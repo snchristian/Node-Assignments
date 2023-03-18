@@ -1,6 +1,26 @@
+const { json } = require("body-parser")
 const { application } = require("express")
 
 const getSongs = (req,res) =>{
+
+    if(Object.keys(req.query).length){
+        const{
+            songTitle,
+            artist,
+            genre
+
+        } =req.query
+
+        const filter = []
+
+        if (songTitle) filter.push(songTitle)
+        if (artist) filter.push(artist)
+        if (genre) filter.push(genre)
+
+        for ( const query of filter){
+            console.log(`Searching song by: ${query}`)
+        }    
+    }
     res
     .status(200)
     .setHeader('Content-Type' ,'application/json')
@@ -23,8 +43,32 @@ const deleteSongs = (req,res) => {
     .json({message:'Removed from the List '})
 }
 
+const getSong  = (req,res) => {
+    res
+    .status(200)
+    .setHeader('Content-Type','application/json')
+    .json({message: `Showing song ${req.params.songId}`})
+}
+
+const putSong = (req,res) =>{
+    res
+    .status(200)
+    .setHeader('Content-Type','application/json')
+    .json({meessage:` Updated song ${req.params.songId}`})
+}
+
+const deleteSong = (req,res) =>{
+    res
+    .status(200)
+    .setHeader('Content-Type',"application/json")
+    .json({message:` Delted song ${req.params.songId}`})
+}
+
 module.exports = {
     getSongs,
     postSong,
-    deleteSongs
+    deleteSongs,
+    getSong,
+    putSong,
+    deleteSong
 }

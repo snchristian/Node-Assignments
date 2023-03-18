@@ -4,7 +4,10 @@ const router = express.Router()
  const {
     getArtists,
     postArtist,
-    deleteArtists
+    deleteArtists,
+    getArtist,
+    putArtist,
+    deleteArtist
 
  } = require('../contollers/artistContoller')
 
@@ -12,5 +15,10 @@ const router = express.Router()
  .get(getArtists)
  .post(postArtist)
  .delete(deleteArtists)
+
+ router.route('/:artistId')
+ .get(getArtist)
+ .put(putArtist)
+ .delete(deleteArtist)
 
  module.exports = router

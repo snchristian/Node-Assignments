@@ -4,16 +4,19 @@ const dotenv = require('dotenv');
 const song = require('./routes/song')
 const artist = require('./routes/artist')
 const user = require('./routes/user')
+const logger = require('./middlewares/logger')
+const error = require('./middlewares/error')
 
 dotenv.config({ path: './config/config.env' }); 
 
 const app = express(); 
 
-
+app.use(logger)
 app.use(bodyParser.json())
 app.use('/song', song)
 app.use('/artist', artist)
 app.use('/user', user);
+app.use(error)
 
 const PORT = process.env.PORT || 5001
 

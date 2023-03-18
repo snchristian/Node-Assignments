@@ -1,5 +1,25 @@
+const { application } = require("express")
 
 const getArtists = (req, res ) =>{
+    if(Object.keys(req.query).length){
+        const{
+            firstName,
+            lastName,
+            gender
+
+        } = req.query
+
+        const filter = []
+
+        if(firstName) filter.push(firstName)
+        if(lastName) filter.push(lastName)
+        if(gender) filter.push(gender)
+
+        for( const query of filter){
+            console.log(`Searching artist by: ${query}`)
+        }
+
+    }
     res
     .status(200)
     .setHeader('Content-Type' ,'application/json')
@@ -21,8 +41,33 @@ const deleteArtists = (req, res) =>{
     .json({message:'Removed from the List '})
 }
 
+const getArtist = (req,res) => {
+    res
+    .status(200)
+    .setHeader('Content-Type','application/json')
+    .json({message:`Getting Atrist ${req.params.artistId}`})
+}
+const putArtist = (req,res) => {
+    res
+    .status(200)
+    .setHeader('Content-Type','application/json')
+    .json({message:`updating Atrist ${req.params.artistId}`})
+}
+
+const deleteArtist = (req,res) => {
+    res
+    .status(200)
+    .setHeader('Content-Type','application/json')
+    .json({message:`Deleting Atrist ${req.params.artistId}`})
+}
+
+
+
 module.exports ={
     getArtists,
     postArtist,
-    deleteArtists
+    deleteArtists,
+    getArtist,
+    putArtist,
+    deleteArtist
 }
