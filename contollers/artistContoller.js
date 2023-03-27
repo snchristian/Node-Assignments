@@ -1,6 +1,7 @@
 const { application } = require("express")
+const Artist = require('../models/Artist')
 
-const getArtists = (req, res ) =>{
+const getArtists = async (req, res ) =>{
     if(Object.keys(req.query).length){
         const{
             firstName,
@@ -20,45 +21,89 @@ const getArtists = (req, res ) =>{
         }
 
     }
-    res
+    try{
+        const artist = await Artist.find()
+        
+        res
+        .status(200)
+        .setHeader('Content-Type' ,'application/json')
+        .json(artist)
+
+    }catch (err){
+        next(err)
+    }
+    
+}
+
+const postArtist = async  (req, res, next) =>{
+    try{
+        const newArtist = await Artist.create(req.body)
+
+        res
+        .status(201)
+        .setHeader('Content-Type', 'application/json')
+        .json(newArtist)
+
+    }catch(err){
+        next(err)
+    }
+    
+
+}
+
+const deleteArtists = async (req, res,next) =>{
+    try{
+        const deletedArtist = await Artist.deleteMany()
+
+        res
+        .status(200) //204
+        .setHeader('Content-Type', 'application/json')
+        .json(deletedArtist)
+    }
+    catch (err){
+        next(err)
+    }   
+}
+
+const getArtist = async (req,res,next) => {
+    try{ 
+        const artist = await Artist.findById(req.params.artistId)
+        res
     .status(200)
-    .setHeader('Content-Type' ,'application/json')
-    .json({message: "Showing all the Artist 'Aaliyah', 'whitney houston','Chloe bailey', 'Toni braxton','Spice'"})
+    .setHeader('Content-Type','application/json')
+    .json(artist)
+
+    }
+    catch (err) {
+        next(err)
+    }
+   
 }
-
-const postArtist = (req, res) =>{
-    res
-    .status(201)
-    .setHeader('Content-Type', 'application/json')
-    .json({message:`${req.body.artistName} is a great artist we have added it to our selection`})
-
-}
-
-const deleteArtists = (req, res) =>{
-    res
-    .status(200) //204
-    .setHeader('Content-Type', 'application/json')
-    .json({message:'Removed from the List '})
-}
-
-const getArtist = (req,res) => {
+const putArtist = async (req,res,next) => {
+    try{
+        const artist = await Artist.findByIdAndUpdate(req.params.artistId,req.body,{new: true})
     res
     .status(200)
     .setHeader('Content-Type','application/json')
-    .json({message:`Getting Atrist ${req.params.artistId}`})
-}
-const putArtist = (req,res) => {
-    res
-    .status(200)
-    .setHeader('Content-Type','application/json')
-    .json({message:`updating Atrist ${req.params.artistId}`})
+    .json(artist)
+
+    }catch(err){
+        next(err)
+    }
+    
 }
 
-const deleteArtist = (req,res) => {
+const deleteArtist =async (req,res,next) => {
+    try{
+        const artist = await Artist.findByIdAndDelete(req.params.artistId)
     res
     .status(200)
     .setHeader('Content-Type','application/json')
-    .json({message:`Deleting Atrist ${req.params.artistId}`})
+    .json(artist)
+
+    }catch(err){
+        next(err)
+    }
 }
 
 

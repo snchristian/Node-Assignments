@@ -1,7 +1,9 @@
 const { json } = require("body-parser")
 const { application } = require("express")
 
-const getSongs = (req,res) =>{
+const Song = require('../models/Song')
+
+const getSongs = async  (req,res,next) =>{
 
     if(Object.keys(req.query).length){
         const{
@@ -21,47 +23,100 @@ const getSongs = (req,res) =>{
             console.log(`Searching song by: ${query}`)
         }    
     }
+
+    try{
+        const songs = await Song.find()
+
+        res
+        .status(200)
+        .setHeader('Content-Type' ,'application/json')
+        .json(songs)
+
+    }catch(err){
+        next(err)
+
+    }
+
     res
     .status(200)
     .setHeader('Content-Type' ,'application/json')
-    .json({message: "Showing all the Songs 'Try Again','Pray it away','For the Night','Dance With Somebody','Un-Break My Heart',"})
+    .json(songs)
 }
 
 
-const postSong = (req,res) =>{
-    res
-    .status(201)
-    .setHeader('Content-Type', 'application/json')
-    .json({message:`${req.body.songName} is a great selection we have added it to our selection`})
+const postSong = async (req,res,next) =>{
+    try{
+        const song = await Song.create(req.body)
+        
+        res
+        .status(201)
+        .setHeader('Content-Type', 'application/json')
+        .json(song)
+
+    }catch (err){
+        next(err)
+    }
+    
 }
 
 
-const deleteSongs = (req,res) => {
+const deleteSongs =async (req,res,next) => {
+    try{
+    const deletedSongs = await Song.deleteMany()
+
     res
     .status(200) //204
     .setHeader('Content-Type', 'application/json')
-    .json({message:'Removed from the List '})
+    .json(deletedSongs)
+    }
+    catch(err){
+        next(err)
+    }
+   
 }
 
-const getSong  = (req,res) => {
+const getSong  = async (req,res,next) => {
+    try{
+        const song = await Song.findById(req.params.songId)
+
+        res
+        .status(200)
+        .setHeader('Content-Type','application/json')
+        .json(song)
+    }
+    catch (err) {
+        next(err)
+    }
+    
+}
+
+const putSong = async (req,res,next) =>{
+    try{
+        const song = await Song.findByIdAndUpdate(req.params.songId,req.body,{new: true})
     res
     .status(200)
     .setHeader('Content-Type','application/json')
-    .json({message: `Showing song ${req.params.songId}`})
+    .json(song)
+    
+    }catch(err){
+        next(err)
+    }
+    
 }
 
-const putSong = (req,res) =>{
-    res
-    .status(200)
-    .setHeader('Content-Type','application/json')
-    .json({meessage:` Updated song ${req.params.songId}`})
-}
+const deleteSong = async (req,res,next) =>{
+    try{
+        const deletedSong = await Song.findByIdAndDelete(req.params.songId)
 
-const deleteSong = (req,res) =>{
-    res
-    .status(200)
-    .setHeader('Content-Type',"application/json")
-    .json({message:` Delted song ${req.params.songId}`})
+        res
+        .status(200)
+        .setHeader('Content-Type',"application/json")
+        .json(deletedSong)
+    }catch (err){
+        next(err)
+    }
+
+    
 }
 
 module.exports = {
