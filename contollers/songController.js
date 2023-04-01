@@ -5,27 +5,32 @@ const Song = require('../models/Song')
 
 const getSongs = async  (req,res,next) =>{
 
+    const filter = {}
+    const options = {}
+
     if(Object.keys(req.query).length){
         const{
             songTitle,
+            genre,
+            sortByArtist,
+            limit, 
             artist,
-            genre
 
         } =req.query
 
-        const filter = []
 
-        if (songTitle) filter.push(songTitle)
-        if (artist) filter.push(artist)
-        if (genre) filter.push(genre)
+        if (songTitle) filter.songTitle = true
+        if (artist) filter.artist = true
+        if (genre) filter.genre = true
 
-        for ( const query of filter){
-            console.log(`Searching song by: ${query}`)
-        }    
+        if (limit) options.limit = limit
+        if (sortByArtist) options.sort = {
+            artist: sortByArtist === 'asc' ? 1 : -1
+        }
     }
 
     try{
-        const songs = await Song.find()
+        const songs = await Song.find({},filter,options)
 
         res
         .status(200)
@@ -37,10 +42,6 @@ const getSongs = async  (req,res,next) =>{
 
     }
 
-    res
-    .status(200)
-    .setHeader('Content-Type' ,'application/json')
-    .json(songs)
 }
 
 
@@ -59,7 +60,6 @@ const postSong = async (req,res,next) =>{
     
 }
 
-
 const deleteSongs =async (req,res,next) => {
     try{
     const deletedSongs = await Song.deleteMany()
@@ -71,8 +71,7 @@ const deleteSongs =async (req,res,next) => {
     }
     catch(err){
         next(err)
-    }
-   
+    }  
 }
 
 const getSong  = async (req,res,next) => {
@@ -86,8 +85,7 @@ const getSong  = async (req,res,next) => {
     }
     catch (err) {
         next(err)
-    }
-    
+    }   
 }
 
 const putSong = async (req,res,next) =>{
@@ -100,8 +98,7 @@ const putSong = async (req,res,next) =>{
     
     }catch(err){
         next(err)
-    }
-    
+    }   
 }
 
 const deleteSong = async (req,res,next) =>{
@@ -115,8 +112,52 @@ const deleteSong = async (req,res,next) =>{
     }catch (err){
         next(err)
     }
+ 
+}
 
-    
+const getRating = async (req,res,next) =>{
+   try {
+    const song = await Song.findById(req.params.songId)
+
+    res
+    .status(200)
+    .setHeader('Content-Type', 'application/json')
+    .json(song.ratings)
+   } catch (err) {
+    next(err)
+   }
+}
+
+const postRating = async (req,res,next) => {
+    try {
+        const song = await Song.findById(req.params.songId)
+        song.ratings.push(req.body)
+        await song.save()
+
+        res
+        .status(201)
+        .setHeader('Content-Type','application/json')
+        .json(song.rating)
+        
+    } catch (err) {
+        next(err)
+    }
+}
+
+const deleteRating = async (req,res,next) => {
+    try {
+        const song = await Song.findById(req.params.songId)
+        song.ratings = []
+        await song.save()
+
+        res
+        .status(200)
+        .setHeader('Content-Type','application/json')
+        .json({msg:`Deleted all rating for item id of ${req.params.itemId}`})
+        
+    } catch (err) {
+        next(err)
+    }
 }
 
 module.exports = {
@@ -125,5 +166,8 @@ module.exports = {
     deleteSongs,
     getSong,
     putSong,
-    deleteSong
+    deleteSong,
+    getRating,
+    postRating,
+    deleteRating
 }

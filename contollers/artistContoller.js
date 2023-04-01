@@ -1,28 +1,28 @@
 const { application } = require("express")
 const Artist = require('../models/Artist')
 
-const getArtists = async (req, res ) =>{
+const getArtists = async (req, res, next ) =>{
+     const filter = {}
+     const options = {}
+
     if(Object.keys(req.query).length){
         const{
             firstName,
             lastName,
-            gender
+            limit,
+            sortByGenre,
 
         } = req.query
 
-        const filter = []
 
-        if(firstName) filter.push(firstName)
-        if(lastName) filter.push(lastName)
-        if(gender) filter.push(gender)
-
-        for( const query of filter){
-            console.log(`Searching artist by: ${query}`)
-        }
+        if(firstName) filter.firstName = true
+        if(lastName) filter.lastName = true
+        if(limit) options.limit = limit
+        if (sortByGenre) options.sort = {genre: sortByGenre}
 
     }
     try{
-        const artist = await Artist.find()
+        const artist = await Artist.find({},filter,options)
         
         res
         .status(200)
@@ -68,7 +68,8 @@ const deleteArtists = async (req, res,next) =>{
 const getArtist = async (req,res,next) => {
     try{ 
         const artist = await Artist.findById(req.params.artistId)
-        res
+
+    res
     .status(200)
     .setHeader('Content-Type','application/json')
     .json(artist)
@@ -81,7 +82,8 @@ const getArtist = async (req,res,next) => {
 }
 const putArtist = async (req,res,next) => {
     try{
-        const artist = await Artist.findByIdAndUpdate(req.params.artistId,req.body,{new: true})
+    const artist = await Artist.findByIdAndUpdate(req.params.artistId,req.body,{new: true})
+
     res
     .status(200)
     .setHeader('Content-Type','application/json')
@@ -95,7 +97,8 @@ const putArtist = async (req,res,next) => {
 
 const deleteArtist =async (req,res,next) => {
     try{
-        const artist = await Artist.findByIdAndDelete(req.params.artistId)
+    const artist = await Artist.findByIdAndDelete(req.params.artistId)
+
     res
     .status(200)
     .setHeader('Content-Type','application/json')

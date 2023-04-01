@@ -3,25 +3,32 @@ const User = require('../models/User')
 
 const getUsers = async (req ,res,next) =>{
 
+    const filter = {}
+    const options = {}
+
     if(Object.keys(req.query).length){
         const{
             userName,
-            gender
+            gender,
+            limit, 
+            sortByAge,
+            age
 
         }=req.query
 
-        const filter = []
 
-        if(userName) filter.push(userName)
-        if(gender) filter.push(gender)
+        if(userName) filter.userName = true
+        if(gender) filter.gender = true
+        if(age) filter.age = true
 
-        for(const query of filter){
-            console.log(`Searching user by: ${query}`)
-        }
+        if(limit) options.limit = limit
+        if (sortByAge) options.sort={
+            age: sortByAge === 'asc' ? 1 : -1 
+        }     
     }
 
     try{
-        const users = await User.find()
+        const users = await User.find({}, filter,options)
 
         res
         .status(200)
@@ -31,7 +38,6 @@ const getUsers = async (req ,res,next) =>{
     }catch(err){
         next(err)
     }
-
 }
 
 const postUser = async (req, res, next) => {
@@ -46,8 +52,6 @@ const postUser = async (req, res, next) => {
     }catch(err){
         next(err)
     }
-    
-
 }
 
 const deleteUsers = async (req, res, next) => {
