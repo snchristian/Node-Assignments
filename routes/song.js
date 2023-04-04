@@ -10,7 +10,10 @@ const {
     deleteSong,
     getRating,
     postRating,
-    deleteRating
+    deleteRating,
+    getSongRating,
+    updateSongRating,
+    deleteSongRating
 } = require('../contollers/songController')
 
 router.route('/')
@@ -23,10 +26,14 @@ router.route('/:songId')
     .put(putSong)
     .delete(deleteSong)
 
-
-router.route('/:songId/rating')
+router.route('/:songId/ratings')
 .get(getRating)
 .post(postRating)
 .delete(deleteRating)
+
+router.route('/:songId/ratings/:ratingId')
+.get(getSongRating)
+.put(updateSongRating)
+.delete(deleteSongRating)
 
 module.exports = router
