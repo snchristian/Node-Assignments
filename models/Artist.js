@@ -4,7 +4,8 @@ const Schema = mongoose.Schema
 const ArtistSchema = new Schema({
     firstName:{type:String, required: true, maxLength: 10},
     lastName:{type:String, required: true, maxLength: 10},
-    genre:{type:String}
+    genre:{type:String},
+    image:{type:String}
 
 },{timestamps:true})
 

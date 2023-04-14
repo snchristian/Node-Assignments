@@ -7,18 +7,26 @@ const {
     deleteUsers,
     getUser,
     putUser,
-    deleteUser
+    deleteUser,
+    login
 
 } = require('../contollers/userController')
 
+const adminValidator = require('../middlewares/utils/validators')
+const protectedRoute = require('../middlewares/auth')
+
 router.route('/')
-    .get(getUsers)
+    .get(protectedRoute,adminValidator,getUsers)
     .post(postUser)
-    .delete(deleteUsers)
+    .delete(protectedRoute,deleteUsers)
+
+router.route('/login')
+    .post(login)
 
 router.route('/:userId')
     .get(getUser)
-    .put(putUser)
-    .delete(deleteUser)
+    .put(protectedRoute,putUser)
+    .delete(protectedRoute,deleteUser)
+
 
 module.exports = router

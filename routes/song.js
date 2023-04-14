@@ -16,15 +16,17 @@ const {
     deleteSongRating
 } = require('../contollers/songController')
 
+const protectedRoute = require('../middlewares/auth')
+
 router.route('/')
     .get(getSongs)
-    .post(postSong)
-    .delete(deleteSongs)
+    .post(protectedRoute,postSong)
+    .delete(protectedRoute,deleteSongs)
 
 router.route('/:songId')
     .get(getSong)
-    .put(putSong)
-    .delete(deleteSong)
+    .put(protectedRoute,putSong)
+    .delete(protectedRoute,deleteSong)
 
 router.route('/:songId/ratings')
 .get(getRating)

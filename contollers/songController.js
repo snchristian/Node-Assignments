@@ -164,7 +164,7 @@ const getSongRating = async (req,res,next) => {
     try {
         const song = await  Song.findById(req.params.songId)
 
-        let rating = song.ratings.find(rating => (req.params.ratingId).equals(rating._id))
+        let rating = song.ratings.find(rating => (rating._id).equals(req.params.ratingId))
 
         if(!rating) rating = {msg: `No rating found with id: ${req.params.ratingId}`}
 
@@ -178,14 +178,14 @@ const getSongRating = async (req,res,next) => {
     }
 }
 
-const updateSongRating = async(req,res,next) => {
+const updateSongRating = async (req,res,next) => {
     try{
-        const song = await Song.findById(req.params.songId)
+        let song = await Song.findById(req.params.songId)
 
-        let rating = song.ratings.find(rating => req.params.ratingId.equals(rating._id))
+        let rating = song.ratings.find(rating => (rating._id).equals(req.params.ratingId))
 
-        if(!rating){
-            const ratingIndexPostion = song.ratings.indexOf(rating)
+        if(rating){
+            let ratingIndexPostion = song.ratings.indexOf(rating)
             song.ratings.splice(ratingIndexPostion, 1, req.body)
 
             rating = req.body
@@ -211,10 +211,10 @@ const deleteSongRating = async (req,res,next) => {
     try{
         const song = await Song.findById(req.params.songId)
 
-        let rating = song.ratings.find(rating => req.params.ratingId.equals(rating._id))
+        let rating = song.ratings.find(rating => (rating. _id).equals(req.params.ratingId))
 
-        if(!rating){
-            const ratingIndexPosition = song.ratings.indexOf(rating)
+        if(rating){
+            let ratingIndexPosition = song.ratings.indexOf(rating)
             song.ratings.splice(ratingIndexPosition,1)
 
             await song.save()
@@ -223,6 +223,7 @@ const deleteSongRating = async (req,res,next) => {
             .status(200)
             .setHeader('Content-Type','application/json')
             .json(rating)
+            
         } else{
             rating = {msg:` No rating found with id:${req.params.ratingId}`}
         }

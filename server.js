@@ -7,6 +7,9 @@ const user = require('./routes/user')
 const logger = require('./middlewares/logger')
 const error = require('./middlewares/error')
 const connectDB = require('./config/db')
+const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload')
+
 
 dotenv.config({ path: './config/config.env' });
 
@@ -14,6 +17,8 @@ connectDB()
 
 const app = express(); 
 
+app.use(fileUpload())
+app.use(cookieParser())
 app.use(logger)
 app.use(bodyParser.json())
 app.use('/song', song)
