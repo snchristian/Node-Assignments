@@ -108,24 +108,23 @@ const deleteUser = async (req,res,next) =>{
 
 const login = async (req,res,next) =>{
     const { email, password } = req.body; 
-    console.log(req.body)
 
-    if (!email || !password) throw new Error('Please provide a email and password'); 
+    if (!email || !password) throw new Error('Please provide a email and password') 
 
-    const user = await User.findOne({ email }).select('+password'); 
-    console.log(user)
+    const user = await User.findOne({ email }).select('+password')
+    
 
-    if (!user) throw new Error('User does not exist');
+    if (!user) throw new Error('User does not exist')
 
     const isMatch = await user.matchPassword(password)
 
-    if (!isMatch) throw new Error('Invalid Credentials'); 
+    if (!isMatch) throw new Error('Invalid Credentials')
 
     sendTokenResponse(user, 200, res)
 }
 
 const sendTokenResponse = (user,statusCode,res) => {
-    const token = user.getSignedJwtToken(); 
+    const token = user.getSignedJwtToken() 
 
     const options = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000), 

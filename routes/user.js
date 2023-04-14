@@ -10,7 +10,7 @@ const {
     deleteUser,
     login
 
-} = require('../contollers/userController')
+} = require('../controllers/userController')
 
 const adminValidator = require('../middlewares/utils/validators')
 const protectedRoute = require('../middlewares/auth')

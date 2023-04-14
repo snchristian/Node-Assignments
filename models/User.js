@@ -50,5 +50,4 @@ UserSchema.methods.matchPassword = async function(enterPassword) {
 }
 
 
-
 module.exports = mongoose.model('User',UserSchema)
